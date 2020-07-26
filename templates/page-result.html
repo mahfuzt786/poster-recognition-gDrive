@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename = 'img/logo.png') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/style-2.css') }}">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js"></script>
+	<title>PostrAPP</title>
+</head>
+<body>
+	
+	<section class="main" style="min-height: 85vh;">
+			<div class="row">
+				<div class="col-md-6 col-sm-6 col-6 col-lg-6 col-xl-6 ">
+					<div class="class_logo"> 
+						<a href="http://postrapp.de/">
+							<img src="{{ url_for('static', filename = 'img/logo.png') }}" class="logo">
+						</a>
+					</div>
+				</div>
+				<div class="col-md-6  col-sm-6 col-6 col-lg-6 col-xl-6 blue_class"></div>
+			</div>
+
+			{% for i in range(image_train|count) %}
+				<div class="row">
+					<img src="{{ url_for('static', filename = 'img/triangle.png') }}" class="triangle_class">
+					<div class="col-md-6  col-sm-6 col-6 col-lg-6 col-xl-6 white_class text-center">
+						<div class="green_border" style="border: none;">
+							<a href="{{url_for('uploaded_file', filename=image_train[i])}}" data-toggle="lightbox" data-gallery="trainImage">
+								<img src="{{url_for('uploaded_file', filename=image_train[i])}}" style="max-width:132px;" height="132px" class="img-responsive" />
+							</a>
+						</div>
+					</div>
+					<div class="col-md-6  col-sm-6 col-6 col-lg-6 col-xl-6 blue_class">
+						{% if matchedImage[i]|count == 0 %}
+							<div class="red_border text-center">
+								<p class="white_text pt-auto pb-auto top_center" style="margin-top: 45% !important;">NICHT GEFUNDEN</p>
+							</div>
+						{% else%}
+							{% for j in range(matchedImage[i]|count) %}
+								<div class="green_border">
+									<a href="{{url_for('uploaded_file', filename=matchedImage[i][j])}}" data-toggle="lightbox" data-gallery="posterImageM{{i}}">
+										<img src="{{url_for('uploaded_file', filename=matchedImage[i][j])}}" style="max-width:132px;" height="132px" class="img-responsive" />
+									</a>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}
+			
+			{% if partialMatchedImage|count != 0 %}
+				<div class="row">
+					<img src="{{ url_for('static', filename = 'img/triangle.png') }}" class="triangle_class">
+				
+					{% for k in range(partialMatchedList|count) %}
+						<!-- { % if partialMatchedList[k]|count != 0 % } -->
+							<div class="col-md-6  col-sm-6 col-6 col-lg-6 col-xl-6 white_class">
+								<!-- <div class="blue_border" >
+									<p class="blue_text pt-auto pb-auto top_less_center">PARTIAL MATCH</p>
+								</div> -->
+								<div class="yellow_border">
+									<p class="blue_text pt-auto pb-auto top_less_center" style="position: absolute; margin-top: 0; top: 76px; color: #FC0;">
+										Passen teilweise
+									</p>
+									<a href="{{url_for('uploaded_file', filename=image_train[k])}}" data-toggle="lightbox" data-gallery="trainImagePartial">
+										<img src="{{url_for('uploaded_file', filename=image_train[k])}}" style="max-width:132px;" height="132px" class="img-responsive" />
+									</a>
+								</div>
+							</div>
+							<div class="col-md-6  col-sm-6 col-6 col-lg-6 col-xl-6 blue_class">
+								{% for partialMatchedList in partialMatchedList[k] %}
+									{% if partialMatchedList in partialMatchedImage %}
+								
+									<!-- { % for j in range(partialMatchedList[k]|count) % } -->
+										<div class="yellow_border">
+											<a href="{{url_for('uploaded_file', filename=partialMatchedList)}}" data-toggle="lightbox" data-gallery="posterImageP">
+												<img src="{{url_for('uploaded_file', filename=partialMatchedList)}}" style="max-width:132px;" height="132px" class="img-responsive" />
+											</a>
+										</div>
+									<!-- { % endfor % } -->
+									{% endif %}
+								{% endfor %}
+							</div>
+						<!-- { % endif % } -->
+					{% endfor %}
+				</div>
+			{% endif %}
+			
+			
+			{% if nomatchedImage|count != 0 %}			
+			<div class="row">
+				<img src="{{ url_for('static', filename = 'img/triangle.png') }}" class="triangle_class">
+					<div class="col-md-6 col-sm-6 col-6 col-lg-6 col-xl-6  white_class">
+						<div class="red_border" >
+							<p class="blue_text pt-auto pb-auto top_less_center">Passen nicht</p>
+						</div>
+					</div>
+					<div class="col-md-6  col-sm-6 col-6 col-lg-6 col-xl-6 blue_class">
+						{% if nomatchedImage|count == 0 %}
+							<div class="red_border text-center">
+								<p class="white_text pt-auto pb-auto top_center" style="margin-top: 45% !important;">NICHT GEFUNDEN</p>
+							</div>
+						{% else%}
+							{% for j in range(nomatchedImage|count) %}
+								<div class="red_border">
+									<a href="{{url_for('uploaded_file', filename=nomatchedImage[j])}}" data-toggle="lightbox" data-gallery="posterImageN">
+										<img src="{{url_for('uploaded_file', filename=nomatchedImage[j])}}" style="max-width:132px;" height="132px" class="img-responsive" />
+									</a>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+			</div>
+			{% endif %}
+	</section>
+	<footer>
+		<!-- bottom -->
+		<div class="col-sm-12">
+			<div class="col-md-6 col-sm-12" style="float: left; height: 110px; line-height: 15px;">
+				<div class="foot"><span class="footer_text text-center"> <a href="http://postrapp.de/imprint.php" target="_blank"><u> Impressum </u></a> &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; <a href="http://postrapp.de/privacy-policy.php" target="_blank"> <u> Datenschutzhinweise </u> </a> &nbsp;&nbsp;&nbsp; 
+			<br/><br/> Copyright 2019-2020 Alegra Labs GmbH. Alle Rechte vorbehalten.</span>	</div>
+			</div>
+			<div class="col-md-6 col-sm-12 blue_class try_div text-right blue_class_change" style="background: white; float: right;">
+				<a href="{{ url_for('index')}}">
+					<img src="{{ url_for('static', filename = 'img/try-again.png') }}" class="try_again">
+				</a>
+			</div>
+			<!-- <div class="col-md-6 col-sm-6 col-lg-6 col-xl-6 hide" >
+					<! -- <div class="col-md-6 col-sm-6 col-12 col-lg-6 col-xl-6  not_hide" style="display: none;"> - ->
+				<div class="foot"><span class="footer_text text-center"> Copyright 2019-2020.Alegralabs.com. All rights reserved</span>	</div>
+			</div> -->
+		</div>
+	</footer>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			// light box
+			$(document).on('click', '[data-toggle="lightbox"]', function(event) {
+				event.preventDefault();
+				$(this).ekkoLightbox({
+					alwaysShowClose: true
+				});
+			});
+		});
+	</script>
+<!-- <footer ><span class="footer_text text-center not_hide"> Copyright 2019-2020.Alegralabs.com.All rights reserved</span></footer>
+ -->
+
+</body>
+</html>
